@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 466">
+    <defs>
+        <linearGradient id="meterGrad" x1="0%" y1="100%" x2="0%" y2="0%">
+            <stop offset="0%" stop-color="#00FF7F"/>
+            <stop offset="70%" stop-color="#FFD700"/>
+            <stop offset="90%" stop-color="#FF318F"/>
+            <stop offset="100%" stop-color="#FF0000"/>
+        </linearGradient>
+    </defs>
+    <!-- Background Frame -->
+    <rect x="0" y="0" width="32" height="466" rx="4" fill="#08090D"/>
+    <!-- Visual reference of full meter bars -->
+    <rect x="2" y="2" width="12" height="462" fill="url(#meterGrad)"/>
+    <rect x="18" y="2" width="12" height="462" fill="url(#meterGrad)"/>
+</svg>

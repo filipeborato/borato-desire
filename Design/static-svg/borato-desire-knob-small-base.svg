@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
+    <defs>
+        <!-- Dark metallic gradient for the body -->
+        <radialGradient id="knobBaseGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#212330"/>
+            <stop offset="70%" stop-color="#0E0F14"/>
+            <stop offset="90%" stop-color="#08090D"/>
+            <stop offset="100%" stop-color="#000000"/>
+        </radialGradient>
+        
+        <!-- Specular reflection for brushed metal look -->
+        <linearGradient id="metalShine" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.15"/>
+            <stop offset="45%" stop-color="#000000" stop-opacity="0.4"/>
+            <stop offset="55%" stop-color="#000000" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0.1"/>
+        </linearGradient>
+
+        <linearGradient id="innerShadow" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#000" stop-opacity="0.8"/>
+            <stop offset="100%" stop-color="#fff" stop-opacity="0.1"/>
+        </linearGradient>
+    </defs>
+    
+    <!-- Outer rim / bezel base -->
+    <circle cx="55" cy="55" r="54" fill="#141520" stroke="#000" stroke-width="2"/>
+    
+    <!-- Main metallic body -->
+    <circle cx="55" cy="55" r="50" fill="url(#knobBaseGrad)"/>
+    <circle cx="55" cy="55" r="50" fill="url(#metalShine)"/>
+    
+    <!-- Inner concentric grooves for texture -->
+    <circle cx="55" cy="55" r="30" fill="none" stroke="#000000" stroke-width="1" stroke-opacity="0.3"/>
+    <circle cx="55" cy="55" r="15" fill="none" stroke="#000000" stroke-width="1" stroke-opacity="0.2"/>
+    
+    <!-- Indentation ring for the glow -->
+    <circle cx="55" cy="55" r="48" fill="none" stroke="url(#innerShadow)" stroke-width="2"/>
+</svg>

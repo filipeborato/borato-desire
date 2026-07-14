@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
+    <!-- Visual reference only, see .md for implementation parameters -->
+    <g transform-origin="55 55">
+        <line x1="55" y1="17" x2="55" y2="5" stroke="#FF318F" stroke-width="3" stroke-linecap="round"/>
+    </g>
+</svg>

@@ -1,0 +1,22 @@
+:root {
+    --background: #07080e;
+    --panel: #10111a;
+    --glass: #170a1e;
+
+    --pink: #ff318f;
+    --pink-core: #ffd4ed;
+    --magenta: #a91466;
+
+    --cyan: #24d8ff;
+    --cyan-core: #92f1ff;
+
+    --text: #f0edf5;
+    --text-secondary: #aaa5b7;
+    --text-dim: #625d70;
+
+    --border-subtle: #211d29;
+    --chassis-dark: #0a0b10;
+
+    --plugin-width: 1456px;
+    --plugin-height: 1024px;
+}

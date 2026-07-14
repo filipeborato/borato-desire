@@ -1,0 +1,15 @@
+{
+  "background": "#07080E",
+  "panel": "#10111A",
+  "glass": "#170A1E",
+  "pink": "#FF318F",
+  "pinkCore": "#FFD4ED",
+  "magenta": "#A91466",
+  "cyan": "#24D8FF",
+  "cyanCore": "#92F1FF",
+  "text": "#F0EDF5",
+  "textSecondary": "#AAA5B7",
+  "textDim": "#625D70",
+  "borderSubtle": "#211D29",
+  "chassisDark": "#0A0B10"
+}

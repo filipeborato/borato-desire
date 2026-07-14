@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110">
+    <!-- Visual reference only, see .md for implementation parameters -->
+    <circle cx="55" cy="55" r="48" fill="none" stroke="#FF318F" stroke-width="6" 
+            transform="rotate(135 55 55)" stroke-linecap="round" stroke-dasharray="226.19 301.59" opacity="0.6" filter="blur(2px)"/>
+    <circle cx="55" cy="55" r="48" fill="none" stroke="#FFF" stroke-width="2" 
+            transform="rotate(135 55 55)" stroke-linecap="round" stroke-dasharray="226.19 301.59"/>
+</svg>

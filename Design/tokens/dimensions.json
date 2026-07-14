@@ -1,0 +1,14 @@
+{
+  "width": 1456,
+  "height": 1024,
+  "margin": 20,
+  "toolbarHeight": 80,
+  "footerHeight": 60,
+  "sidePanelWidth": 120,
+  "displayHeight": 540,
+  "controlAreaHeight": 280,
+  "radiusOuter": 16,
+  "radiusInner": 12,
+  "knobSmallRadius": 60,
+  "knobMainRadius": 130
+}
