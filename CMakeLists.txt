@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(BoratoDesire VERSION 0.1.0 LANGUAGES CXX)
+# JUCE needs a C compiler too (e.g. the Sheenbidi text-shaping sources), which
+# it enables implicitly from inside its own CMake scripts. Declaring only CXX
+# here and letting C get enabled late/indirectly works fine with the Visual
+# Studio generator but breaks Ninja's single-pass build.ninja generation
+# (CMAKE_C_COMPILE_OBJECT ends up unset at generate time) -- so declare both
+# up front.
+project(BoratoDesire VERSION 0.0.1 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
