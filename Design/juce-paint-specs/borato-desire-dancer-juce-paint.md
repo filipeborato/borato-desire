@@ -1,5 +1,10 @@
 # Desire Pole Dancer Neon
 
+> **LEGADO — NÃO IMPLEMENTAR COMO JUCE PAINT.** A arte canônica aprovada é
+> `Assets/borato-desire-dancer-art.svg`. Ela deve permanecer um asset estático
+> SVG/PNG incorporado ao plugin. Este documento registra uma tentativa anterior
+> e não é mais um contrato de implementação.
+
 - Asset Original: `borato-desire-dancer-polished.svg`
 - Bounding Box no JUCE: 333x520 (Escala ~0.585 do SVG original 570x922)
 - Posição (relativa ao Display de 1156px): Deslocada sutilmente para a esquerda, `X = 450px`. O mastro (pole) fica fiel ao conceito inicial do `first-drawing.svg`.

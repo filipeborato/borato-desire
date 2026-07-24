@@ -1,0 +1,31 @@
+Copyright (c) 2026 Borato Company. All rights reserved.
+
+This software, including its source code, audio processing algorithms, user
+interface design, artwork, and associated documentation (collectively, the
+"Software"), is the proprietary property of Borato Company.
+
+No part of the Software may be reproduced, distributed, modified, reverse
+engineered, decompiled, or used to create derivative works, in whole or in
+part, in any form or by any means, without the prior written permission of
+Borato Company, except as expressly permitted by a separate end-user license
+agreement accompanying a distributed build of the Software.
+
+Distributed builds of the Software (e.g. installers or plugin bundles
+published by Borato Company) are licensed, not sold, to end users under the
+terms accompanying that distribution. This repository's source code is not
+itself licensed for use, and no rights are granted by making it accessible in
+version control.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL
+BORATO COMPANY BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER LIABILITY ARISING
+FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+IN THE SOFTWARE.
+
+---
+
+This project depends on the JUCE framework (https://juce.com), used here
+under its own license terms (commercial or AGPLv3, per JUCE's dual-licensing
+model). JUCE is not part of this repository and is fetched separately at
+build time; see README.md.

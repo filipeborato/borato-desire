@@ -19,4 +19,6 @@
 
     --plugin-width: 1456px;
     --plugin-height: 1024px;
+    --plugin-max-width: 2912px;
+    --plugin-max-height: 2048px;
 }

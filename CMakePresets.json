@@ -1,0 +1,39 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "windows-vs2026",
+      "displayName": "Windows / Visual Studio 2026",
+      "generator": "Visual Studio 18 2026",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release"
+      }
+    },
+    {
+      "name": "windows-vs2026-picotado-juce",
+      "displayName": "Windows / VS 2026 / reuse Picotado JUCE",
+      "inherits": "windows-vs2026",
+      "cacheVariables": {
+        "BORATO_DESIRE_JUCE_SOURCE": "C:/Users/filipe/projects/picotado/libs/juce"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "standalone-debug",
+      "configurePreset": "windows-vs2026-picotado-juce",
+      "configuration": "Debug",
+      "targets": ["BoratoDesire_Standalone"],
+      "jobs": 4
+    },
+    {
+      "name": "vst3-release",
+      "configurePreset": "windows-vs2026-picotado-juce",
+      "configuration": "Release",
+      "targets": ["BoratoDesire_VST3"],
+      "jobs": 4
+    }
+  ]
+}
