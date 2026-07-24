@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1456 1024" font-family="'Segoe UI', -apple-system, sans-serif">
+    <!-- Header strip inset -->
+    <rect x="12" y="14" width="1432" height="74" rx="14" fill="#0a0b11" opacity="0.55" stroke="#1c1d26" stroke-width="1"/>
+
+    <!-- Preset browser pill. Name text and page dots are dynamic, drawn by
+         the HTML overlay (#toolbar-preset-name in index.html), not baked here. -->
+    <g>
+        <rect x="396" y="26" width="456" height="50" rx="12" fill="#0c0d13" stroke="#211d29" stroke-width="1.5"/>
+        <line x1="456" y1="32" x2="456" y2="70" stroke="#211d29" stroke-width="1.5"/>
+        <line x1="792" y1="32" x2="792" y2="70" stroke="#211d29" stroke-width="1.5"/>
+        <text x="426" y="59" fill="#aaa5b7" font-size="26" text-anchor="middle">&#8249;</text>
+        <text x="822" y="59" fill="#aaa5b7" font-size="26" text-anchor="middle">&#8250;</text>
+    </g>
+
+    <!-- A / B compare. The "A / B" glyphs are dynamic (active slot highlight),
+         drawn by the HTML overlay; only the box chrome is baked here. -->
+    <g font-weight="bold">
+        <rect x="900" y="26" width="50" height="50" rx="10" fill="#17070f" stroke="#ff318f" stroke-width="1.5"/>
+    </g>
+
+    <!-- Undo / Redo -->
+    <g>
+        <rect x="1108" y="26" width="50" height="50" rx="10" fill="#0c0d13" stroke="#211d29" stroke-width="1.5"/>
+        <path d="M 1143 58 A 11 11 0 1 0 1124 44" fill="none" stroke="#aaa5b7" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 1122 36 L 1123 45 L 1132 44" fill="none" stroke="#aaa5b7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="1168" y="26" width="50" height="50" rx="10" fill="#0c0d13" stroke="#211d29" stroke-width="1.5"/>
+        <path d="M 1183 58 A 11 11 0 1 1 1202 44" fill="none" stroke="#aaa5b7" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M 1204 36 L 1203 45 L 1194 44" fill="none" stroke="#aaa5b7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+
+    <!-- Menu -->
+    <g stroke="#aaa5b7" stroke-width="3" stroke-linecap="round">
+        <line x1="1380" y1="41" x2="1416" y2="41"/>
+        <line x1="1380" y1="51" x2="1416" y2="51"/>
+        <line x1="1380" y1="61" x2="1416" y2="61"/>
+    </g>
+</svg>

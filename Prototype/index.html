@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,11 +10,40 @@
     <link rel="stylesheet" href="styles/materials.css">
     <link rel="stylesheet" href="styles/controls.css">
 </head>
+
 <body>
     <div class="plugin" id="desire-plugin">
         <!-- Fundo Estático -->
         <img class="plugin-layer static-layer" src="../Design/static-svg/borato-desire-shell.svg" alt="Shell">
-        
+        <div class="plugin-layer metal-surface" aria-hidden="true"></div>
+        <img class="plugin-layer static-layer" src="../Design/static-svg/borato-desire-toolbar.svg" alt="Toolbar">
+
+        <!-- Bypass, presets, A/B, undo/redo. Positioned to sit exactly inside the
+             chrome already baked into borato-desire-toolbar.svg (pill outline,
+             arrow glyphs, A/B box, undo/redo icons) -- these controls stay
+             transparent/borderless wherever the artwork already drew the box,
+             and only carry their own visible chrome where the artwork has none
+             (BYPASS, COPY, and the preset name text it deliberately omits). -->
+        <div class="plugin-layer" id="toolbar-controls">
+            <button type="button" id="toolbar-preset-prev" class="toolbar-hit toolbar-preset-prev" aria-label="Previous preset"></button>
+            <span id="toolbar-preset-name" class="toolbar-preset-name">Late Night Confessions</span>
+            <button type="button" id="toolbar-preset-next" class="toolbar-hit toolbar-preset-next" aria-label="Next preset"></button>
+
+            <button type="button" id="toolbar-ab-toggle" class="toolbar-hit toolbar-ab-toggle" aria-label="Toggle A/B slot">
+                <span id="toolbar-ab-a" class="is-active">A</span><span class="toolbar-ab-sep">/</span><span id="toolbar-ab-b">B</span>
+            </button>
+
+            <button type="button" id="toolbar-bypass" class="toolbar-pill toolbar-bypass" aria-pressed="false">BYPASS</button>
+
+            <button type="button" id="toolbar-undo" class="toolbar-hit toolbar-undo" aria-label="Undo" disabled></button>
+            <button type="button" id="toolbar-redo" class="toolbar-hit toolbar-redo" aria-label="Redo" disabled></button>
+
+            <div class="toolbar-pill toolbar-copy-save">
+                <button type="button" id="toolbar-ab-copy" class="toolbar-text-button">COPY A&#8596;B</button>
+                <button type="button" id="toolbar-preset-save" class="toolbar-text-button">SAVE</button>
+            </div>
+        </div>
+
         <!-- Camada de Exibição Principal -->
         <div class="plugin-layer" id="display-layer">
             <div id="display-center">
@@ -21,131 +51,283 @@
                 <div class="club-backdrop"></div>
 
                 <svg id="dynamic-display" viewBox="0 0 1156 540" width="1156" height="540">
+                    <defs>
+                        <linearGradient id="dancerFadeGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0.76" stop-color="#fff" />
+                            <stop offset="0.97" stop-color="#000" />
+                        </linearGradient>
+                        <mask id="dancerFade" maskUnits="userSpaceOnUse" x="0" y="0" width="1156" height="540">
+                            <rect x="0" y="0" width="1156" height="540" fill="url(#dancerFadeGrad)" />
+                        </mask>
+                        <linearGradient id="dancerFadeGradX" x1="0" y1="0" x2="1" y2="0">
+                            <stop offset="0" stop-color="#000" />
+                            <stop offset="0.14" stop-color="#fff" />
+                            <stop offset="0.94" stop-color="#fff" />
+                            <stop offset="1" stop-color="#000" />
+                        </linearGradient>
+                        <mask id="dancerFadeX" maskUnits="userSpaceOnUse" x="358" y="-40" width="500" height="667">
+                            <rect x="358" y="-40" width="500" height="667" fill="url(#dancerFadeGradX)" />
+                        </mask>
+                        <!--
+                            A arte canônica contém um fundo preto/roxo no próprio trace.
+                            O filtro usa a luminância somente como alpha: remove o painel
+                            escuro sem redesenhar nem simplificar a dançarina.
+                        -->
+                        <filter id="dancerDarkKey" x="-8%" y="-8%" width="116%" height="116%"
+                            color-interpolation-filters="sRGB">
+                            <feColorMatrix type="matrix" values="
+                                1 0 0 0 0
+                                0 1 0 0 0
+                                0 0 1 0 0
+                                0.299 0.587 0.114 0 0" />
+                            <feComponentTransfer>
+                                <feFuncA type="linear" slope="3.2" intercept="-0.18" />
+                            </feComponentTransfer>
+                        </filter>
+                    </defs>
+
                     <g id="spectrum-layer"></g>
-                    
-                    <g id="dancer-image-layer">
-                        <image href="../Design/static-svg/borato-desire-dancer-polished.svg" x="411" y="20" width="333" height="520" class="desire-dancer" />
-                    </g>
-                    
                     <g id="curve-layer"></g>
-                    <g id="dancer-layer"></g>
+
+                    <g id="dancer-image-layer" mask="url(#dancerFade)">
+                        <image href="../Assets/borato-desire-dancer-art.svg" x="358" y="-40" width="500" height="667"
+                            mask="url(#dancerFadeX)" filter="url(#dancerDarkKey)" class="desire-dancer" />
+                    </g>
+
+                    <g id="particle-layer"></g>
                 </svg>
+
+                <!-- Mobília estática do display (logo, sign e eixo) -->
+                <img id="display-frame" src="../Design/static-svg/borato-desire-display-frame.svg" alt="Display frame">
+
+                <div class="analyzer-controls" aria-label="Spectrum analyzer controls">
+                    <label class="analyzer-select">
+                        <span class="sr-only">Analyzer view</span>
+                        <select id="analyzer-view">
+                            <option value="spectrum">SPECTRUM</option>
+                            <option value="off">OFF</option>
+                        </select>
+                        <span class="select-chevron" aria-hidden="true"></span>
+                    </label>
+
+                    <label class="analyzer-select">
+                        <span class="sr-only">Analyzer position</span>
+                        <select id="analyzer-tap">
+                            <option value="pre">PRE</option>
+                            <option value="post">POST</option>
+                        </select>
+                        <span class="select-chevron" aria-hidden="true"></span>
+                    </label>
+
+                    <div class="analyzer-band-panel">
+                        <label class="analyzer-range-row">
+                            <span>LF</span>
+                            <output id="analyzer-lf-value" for="analyzer-lf">20.0 Hz</output>
+                            <input id="analyzer-lf" type="range" min="0" max="1" step="0.001" value="0"
+                                aria-label="Analyzer low frequency">
+                        </label>
+                        <label class="analyzer-range-row">
+                            <span>HF</span>
+                            <output id="analyzer-hf-value" for="analyzer-hf">20.0 kHz</output>
+                            <input id="analyzer-hf" type="range" min="0" max="1" step="0.001" value="1"
+                                aria-label="Analyzer high frequency">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="mode-selector" role="radiogroup" aria-label="Desire mode">
+                    <button type="button" class="mode-option" role="radio" aria-checked="false"
+                        data-mode="intimate">
+                        <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M4 5h16l-8 8zM12 13v5M8 19h8" />
+                        </svg>
+                        <span>INTIMATE</span>
+                    </button>
+                    <button type="button" class="mode-option is-active" role="radio" aria-checked="true"
+                        data-mode="club">
+                        <svg class="mode-icon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M3 9v6M7 5v14M11 8v8M15 4v16M19 7v10M23 10v4" />
+                        </svg>
+                        <span>CLUB</span>
+                    </button>
+                    <button type="button" class="mode-option" role="radio" aria-checked="false"
+                        data-mode="after-dark">
+                        <svg class="mode-icon mode-icon-moon" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M18.5 16.4A8 8 0 0 1 8.1 5.8 8.2 8.2 0 1 0 18.5 16.4z" />
+                        </svg>
+                        <span>AFTER DARK</span>
+                    </button>
+                </div>
 
                 <!-- Reflexo e ruído do Vidro por cima do SVG -->
                 <div class="glass-overlay"></div>
             </div>
         </div>
-        
+
         <!-- Camada de Controles -->
         <div class="plugin-layer" id="control-layer">
-            
+
             <!-- Left Meter (Input) -->
-            <div class="stereo-meter" style="left: 59px; top: 137px;">
-                <div class="meter-bar-container"><div class="meter-bar l-channel"></div></div>
-                <div class="meter-bar-container"><div class="meter-bar r-channel"></div></div>
+            <div class="stereo-meter" style="left: 4.052%; top: 13.379%;">
+                <div class="meter-bar-container">
+                    <div class="meter-bar l-channel"></div>
+                </div>
+                <div class="meter-bar-container">
+                    <div class="meter-bar r-channel"></div>
+                </div>
             </div>
 
             <!-- Right Meter (Output) -->
-            <div class="stereo-meter" style="left: 1365px; top: 137px;">
-                <div class="meter-bar-container"><div class="meter-bar l-channel"></div></div>
-                <div class="meter-bar-container"><div class="meter-bar r-channel"></div></div>
+            <div class="stereo-meter" style="left: 93.750%; top: 13.379%;">
+                <div class="meter-bar-container">
+                    <div class="meter-bar l-channel"></div>
+                </div>
+                <div class="meter-bar-container">
+                    <div class="meter-bar r-channel"></div>
+                </div>
             </div>
 
             <!-- Main DESIRE Knob -->
-            <div class="desire-knob desire-knob-main" data-param="desire" data-value="0.76" style="left: 728px; top: 790px;">
+            <div class="desire-knob desire-knob-main" data-param="desire" data-value="0.76"
+                style="left: 50.000%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-main-base.svg" class="knob-base" />
                 <svg viewBox="0 0 200 200" class="knob-dynamic-svg">
-                    <circle cx="100" cy="100" r="86" fill="none" stroke="var(--pink)" stroke-width="10" class="knob-arc-path knob-arc-glow" transform="rotate(135 100 100)" stroke-linecap="round" />
-                    <circle cx="100" cy="100" r="86" fill="none" stroke="#fff" stroke-width="3" class="knob-arc-path" transform="rotate(135 100 100)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="100" y1="34" x2="100" y2="14" stroke="var(--pink)" stroke-width="5" stroke-linecap="round"/></g>
+                    <circle cx="100" cy="100" r="86" fill="none" stroke="var(--pink)" stroke-width="10"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 100 100)" stroke-linecap="round" />
+                    <circle cx="100" cy="100" r="86" fill="none" stroke="#fff" stroke-width="3" class="knob-arc-path"
+                        transform="rotate(135 100 100)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="100" y1="34" x2="100" y2="14" stroke="var(--pink)" stroke-width="5"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">76 %</div>
             </div>
 
             <!-- Input -->
-            <div class="desire-knob" data-param="input" data-value="0.66" style="left: 120px; top: 790px;">
+            <div class="desire-knob" data-param="input" data-value="0.389" style="left: 8.242%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
-                <div class="knob-readout">0.0 dB</div>
+                <div class="knob-readout">-10.0 dB</div>
             </div>
 
             <!-- Body -->
-            <div class="desire-knob" data-param="body" data-value="0.65" style="left: 255px; top: 790px;">
+            <div class="desire-knob" data-param="body" data-value="0.65" style="left: 17.514%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">65 %</div>
             </div>
 
             <!-- Heat -->
-            <div class="desire-knob" data-param="heat" data-value="0.72" style="left: 390px; top: 790px;">
+            <div class="desire-knob" data-param="heat" data-value="0.72" style="left: 26.786%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">72 %</div>
             </div>
 
             <!-- Silk -->
-            <div class="desire-knob" data-param="silk" data-value="0.58" style="left: 525px; top: 790px;">
+            <div class="desire-knob" data-param="silk" data-value="0.58" style="left: 36.058%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">58 %</div>
             </div>
 
             <!-- Motion -->
-            <div class="desire-knob" data-param="motion" data-value="0.64" style="left: 931px; top: 790px;">
+            <div class="desire-knob" data-param="motion" data-value="0.64" style="left: 63.942%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--cyan)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--cyan)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--cyan)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">64 %</div>
             </div>
 
             <!-- Width -->
-            <div class="desire-knob" data-param="width" data-value="0.64" style="left: 1066px; top: 790px;">
+            <div class="desire-knob" data-param="width" data-value="0.64" style="left: 73.214%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--cyan)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--cyan)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--cyan)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--cyan)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">128 %</div>
             </div>
 
             <!-- Mix -->
-            <div class="desire-knob" data-param="mix" data-value="0.42" style="left: 1201px; top: 790px;">
+            <div class="desire-knob" data-param="mix" data-value="0.42" style="left: 82.486%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--magenta)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--magenta)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--magenta)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--magenta)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">42 %</div>
             </div>
 
             <!-- Output -->
-            <div class="desire-knob" data-param="output" data-value="0.66" style="left: 1336px; top: 790px;">
+            <div class="desire-knob" data-param="output" data-value="0.66" style="left: 91.758%; top: 77.148%;">
                 <img src="../Design/static-svg/borato-desire-knob-small-base.svg" class="knob-base" />
                 <svg viewBox="0 0 110 110" class="knob-dynamic-svg">
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6" class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path" transform="rotate(135 55 55)" stroke-linecap="round" />
-                    <g class="knob-pointer"><line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3" stroke-linecap="round"/></g>
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="var(--pink)" stroke-width="6"
+                        class="knob-arc-path knob-arc-glow" transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <circle cx="55" cy="55" r="48" fill="none" stroke="#fff" stroke-width="2" class="knob-arc-path"
+                        transform="rotate(135 55 55)" stroke-linecap="round" />
+                    <g class="knob-pointer">
+                        <line x1="55" y1="17" x2="55" y2="5" stroke="var(--pink)" stroke-width="3"
+                            stroke-linecap="round" />
+                    </g>
                 </svg>
                 <div class="knob-readout">0.0 dB</div>
             </div>
@@ -154,8 +336,14 @@
     </div>
 
     <!-- Scripts -->
+    <script src="scripts/mapping.js"></script>
     <script src="scripts/knobs.js"></script>
     <script src="scripts/meters.js"></script>
+    <script src="scripts/analyzer-controls.js"></script>
+    <script src="scripts/modes.js"></script>
+    <script src="scripts/toolbar-controls.js"></script>
     <script src="scripts/display.js"></script>
+    <script src="scripts/bridge.js"></script>
 </body>
+
 </html>

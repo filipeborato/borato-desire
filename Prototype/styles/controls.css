@@ -2,12 +2,13 @@
 
 .desire-knob {
     position: absolute;
-    width: 110px;
-    height: 110px;
+    width: 7.554945cqw;  /* 110 / 1456 */
+    height: 7.554945cqw;
     transform: translate(-50%, -50%);
     cursor: grab;
     user-select: none;
     touch-action: none; 
+    pointer-events: auto;
 }
 
 .desire-knob:active, .desire-knob.is-dragging {
@@ -35,22 +36,23 @@
 }
 
 .knob-arc-glow {
-    filter: blur(3px);
+    filter: blur(clamp(1px, 0.206cqw, 6px));
     opacity: 0.8;
 }
 
 .knob-readout {
     position: absolute;
-    top: 125px; /* Positioned below the knob */
+    top: 8.585165cqw; /* 125 / 1456 */
     left: 50%;
     transform: translateX(-50%);
     color: var(--text-secondary);
-    font-size: 13px;
+    font-size: clamp(7px, 0.892857cqw, 26px);
     font-weight: 500;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
     background: rgba(10, 11, 16, 0.8);
-    padding: 4px 10px;
-    border-radius: 6px;
+    padding: 0.274725cqw 0.686813cqw;
+    border-radius: clamp(3px, 0.412088cqw, 12px);
     border: 1px solid var(--border-subtle);
     pointer-events: none;
     text-shadow: 0 1px 2px rgba(0,0,0,0.8);
@@ -58,8 +60,8 @@
 
 /* Main Knob specifics */
 .desire-knob-main {
-    width: 200px;
-    height: 200px;
+    width: 13.736264cqw; /* 200 / 1456 */
+    height: 13.736264cqw;
 }
 
 .desire-knob-main .knob-pointer {
@@ -67,33 +69,33 @@
 }
 
 .desire-knob-main .knob-arc-glow {
-    filter: blur(5px);
+    filter: blur(clamp(2px, 0.343407cqw, 10px));
 }
 
 .desire-knob-main .knob-readout {
-    top: 215px;
-    font-size: 16px;
-    padding: 6px 14px;
+    top: 14.766484cqw; /* 215 / 1456 */
+    font-size: clamp(9px, 1.098901cqw, 32px);
+    padding: 0.412088cqw 0.961538cqw;
     background: rgba(10, 11, 16, 0.9);
 }
 
 /* Meters */
 .stereo-meter {
     position: absolute;
-    width: 32px;
-    height: 466px;
+    width: 2.197802cqw; /* 32 / 1456 */
+    height: 45.507813cqh; /* 466 / 1024 */
     display: flex;
     justify-content: space-between;
     background: #050508;
-    border-radius: 4px;
+    border-radius: clamp(2px, 0.274725cqw, 8px);
     /* Inner shadow to look like a cutout in the panel */
-    box-shadow: inset 0 2px 10px rgba(0,0,0,1);
-    padding: 2px 2px;
+    box-shadow: inset 0 0.137363cqw 0.686813cqw rgba(0,0,0,1);
+    padding: 0.137363cqw;
     box-sizing: border-box;
 }
 
 .stereo-meter .meter-bar-container {
-    width: 12px;
+    width: 37.5%;
     height: 100%;
     position: relative;
     display: flex;
@@ -107,4 +109,376 @@
     transform-origin: bottom;
     transform: scaleY(0);
     /* No CSS transition, JS handles the falloff via requestAnimationFrame */
+}
+
+/* Three-state mode component */
+.mode-selector {
+    position: absolute;
+    left: 10.207%;
+    bottom: 0.741%;
+    width: 79.585%;
+    height: 7.037%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    overflow: hidden;
+    box-sizing: border-box;
+    border: 1px solid rgba(86, 76, 99, 0.62);
+    border-radius: 999px;
+    background: rgba(8, 8, 14, 0.76);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 8px 24px rgba(0, 0, 0, 0.34);
+    z-index: 3;
+    pointer-events: auto;
+}
+
+.mode-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(5px, 0.824176cqw, 24px);
+    min-width: 0;
+    padding: 0 10px;
+    border: 0;
+    border-right: 1px solid rgba(70, 61, 82, 0.58);
+    background: transparent;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: clamp(8px, 0.961538cqw, 28px);
+    letter-spacing: clamp(1px, 0.274725cqw, 8px);
+    cursor: pointer;
+    transition: color 120ms ease, background-color 120ms ease, text-shadow 120ms ease;
+}
+
+.mode-option:last-child {
+    border-right: 0;
+}
+
+.mode-option:hover {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.mode-option.is-active {
+    color: var(--pink);
+    background: linear-gradient(180deg, rgba(255, 49, 143, 0.055), rgba(255, 49, 143, 0.018));
+    font-weight: 650;
+    text-shadow: 0 0 10px rgba(255, 49, 143, 0.72);
+}
+
+.mode-option:focus-visible {
+    outline: 1px solid var(--pink-core);
+    outline-offset: -3px;
+}
+
+.mode-icon {
+    width: clamp(12px, 1.648352cqw, 48px);
+    height: clamp(12px, 1.648352cqw, 48px);
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.mode-icon-moon {
+    fill: currentColor;
+    stroke: none;
+}
+
+/* Analyzer controls: view, tap point and visible frequency range */
+.analyzer-controls {
+    position: absolute;
+    left: 81.834%;
+    top: 4.444%;
+    width: 15.398%;
+    height: 25.556%;
+    display: grid;
+    grid-template-rows: 24.638% 21.739% 42.029%;
+    gap: 5.797%;
+    z-index: 3;
+    pointer-events: auto;
+}
+
+.analyzer-select,
+.analyzer-band-panel {
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid rgba(70, 61, 82, 0.72);
+    border-radius: clamp(4px, 0.549451cqw, 16px);
+    background: rgba(8, 9, 14, 0.82);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.025),
+        0 6px 18px rgba(0, 0, 0, 0.32);
+}
+
+.analyzer-select select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    appearance: none;
+    box-sizing: border-box;
+    padding: 0 25% 0 8%;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: clamp(8px, 0.892857cqw, 26px);
+    letter-spacing: clamp(0.5px, 0.103022cqw, 3px);
+    cursor: pointer;
+}
+
+.analyzer-select select:focus-visible,
+.analyzer-range-row:focus-within {
+    outline: 1px solid var(--pink-core);
+    outline-offset: -2px;
+}
+
+.select-chevron {
+    position: absolute;
+    right: 9%;
+    top: 50%;
+    width: clamp(6px, 0.824176cqw, 24px);
+    height: clamp(6px, 0.824176cqw, 24px);
+    border-right: 2px solid var(--text-secondary);
+    border-bottom: 2px solid var(--text-secondary);
+    transform: translateY(-68%) rotate(45deg);
+    pointer-events: none;
+}
+
+.analyzer-band-panel {
+    display: grid;
+    grid-template-rows: repeat(2, 1fr);
+    padding: 4% 7%;
+    background: rgba(5, 6, 11, 0.93);
+}
+
+.analyzer-range-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    min-width: 0;
+    color: var(--text-secondary);
+    font-size: clamp(8px, 0.892857cqw, 26px);
+}
+
+.analyzer-range-row output {
+    justify-self: end;
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #ff62ad;
+    background: rgba(255, 49, 143, 0.08);
+    box-shadow: 0 0 12px rgba(255, 49, 143, 0.12);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    text-shadow:
+        0 0 2px rgba(255, 212, 237, 0.95),
+        0 0 7px rgba(255, 49, 143, 0.95),
+        0 0 15px rgba(255, 49, 143, 0.62);
+}
+
+.analyzer-range-row input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    opacity: 0;
+    cursor: ew-resize;
+}
+
+.analyzer-controls.is-disabled .analyzer-band-panel {
+    opacity: 0.38;
+}
+
+.analyzer-controls.is-disabled .analyzer-range-row input {
+    cursor: default;
+}
+
+/* Toolbar: bypass, presets, A/B, undo/redo.
+   Positions are lifted directly from the chrome baked into
+   borato-desire-toolbar.svg (viewBox 1456x1024, header row y=26..76) so these
+   controls land exactly inside the pill/box outlines already drawn there
+   instead of drawing a second, overlapping set of buttons. Elements that sit
+   on top of existing art (arrows, A/B box, undo/redo icons) stay fully
+   transparent hit targets; only BYPASS and the COPY/SAVE pill -- which have
+   no baked chrome -- get their own visible background, in the empty gaps
+   between the artwork's boxes. */
+#toolbar-controls {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+}
+
+#toolbar-controls > * {
+    position: absolute;
+    top: 2.539%;
+    height: 4.883%;
+    box-sizing: border-box;
+    pointer-events: auto;
+}
+
+.toolbar-hit {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.toolbar-hit:disabled {
+    cursor: default;
+}
+
+/* Dim the baked undo/redo icon when disabled -- the icon itself is static
+   art inside an <img>, so a translucent scrim on the (transparent) hit
+   target is the only way to reflect state without editing the SVG per-frame. */
+.toolbar-undo:disabled,
+.toolbar-redo:disabled {
+    background: rgba(10, 11, 17, 0.55);
+    border-radius: clamp(4px, 0.55cqw, 12px);
+}
+
+.toolbar-preset-prev { left: 27.198%; width: 4.121%; }
+.toolbar-preset-next { left: 54.396%; width: 4.121%; }
+
+.toolbar-preset-name {
+    left: 31.319%;
+    width: 23.077%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--pink);
+    font-size: clamp(7px, 0.72cqw, 17px);
+    letter-spacing: 0.02em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.toolbar-ab-toggle {
+    left: 61.813%;
+    width: 3.434%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.15em;
+    font-weight: bold;
+    font-size: clamp(7px, 0.7cqw, 20px);
+}
+
+.toolbar-ab-toggle span {
+    color: var(--text-dim);
+}
+
+.toolbar-ab-toggle span.is-active {
+    color: var(--pink);
+}
+
+.toolbar-ab-sep {
+    color: var(--text-dim) !important;
+    font-weight: normal;
+}
+
+.toolbar-undo { left: 76.099%; width: 3.434%; }
+.toolbar-redo { left: 80.220%; width: 3.434%; }
+
+.toolbar-pill {
+    box-sizing: border-box;
+    border: 1px solid rgba(70, 61, 82, 0.72);
+    border-radius: clamp(4px, 0.55cqw, 12px);
+    background: rgba(12, 13, 19, 0.82);
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: clamp(6px, 0.62cqw, 15px);
+    letter-spacing: 0.05em;
+    cursor: pointer;
+}
+
+.toolbar-bypass {
+    left: 66.346%;
+    width: 8.654%;
+    font-weight: 600;
+}
+
+.toolbar-bypass:hover {
+    color: var(--text);
+    border-color: var(--pink-core);
+}
+
+.toolbar-bypass.is-active {
+    color: var(--pink-core);
+    border-color: var(--pink);
+    background: rgba(255, 49, 143, 0.14);
+    box-shadow: 0 0 8px rgba(255, 49, 143, 0.45);
+}
+
+.toolbar-copy-save {
+    left: 84.753%;
+    width: 8.929%;
+    display: flex;
+    align-items: stretch;
+}
+
+.toolbar-text-button {
+    flex: 1 1 50%;
+    background: transparent;
+    border: 0;
+    color: var(--text-secondary);
+    font: inherit;
+    font-size: clamp(6px, 0.58cqw, 14px);
+    letter-spacing: 0.04em;
+    cursor: pointer;
+}
+
+.toolbar-text-button + .toolbar-text-button {
+    border-left: 1px solid rgba(70, 61, 82, 0.72);
+}
+
+.toolbar-text-button:hover {
+    color: var(--text);
+}
+
+#desire-preview-badge {
+    position: fixed;
+    right: 12px;
+    bottom: 12px;
+    padding: 4px 10px;
+    background: rgba(255, 49, 143, 0.85);
+    color: #fff;
+    font: 600 11px/1.4 sans-serif;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    z-index: 9999;
+    pointer-events: none;
+}
+
+#desire-error-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 4, 8, 0.92);
+    color: #ff9fc4;
+    font: 12px/1.5 monospace;
+    padding: 24px;
+    overflow: auto;
+    z-index: 10000;
+    white-space: pre-wrap;
+}
+
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
