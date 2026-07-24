@@ -14,7 +14,7 @@ target_link_libraries(DesireEngineTests PRIVATE
     juce::juce_recommended_warning_flags
 )
 
-target_compile_definitions(DesireEngineTests PRIVATE JUCE_STANDALONE_APPLICATION=1)
+target_compile_definitions(DesireEngineTests PRIVATE JUCE_STANDALONE_APPLICATION=1 JUCE_USE_CURL=0)
 
 add_test(NAME DesireEngineTests COMMAND DesireEngineTests)
 
@@ -35,6 +35,6 @@ target_link_libraries(PresetManagerTests PRIVATE
     juce::juce_recommended_warning_flags
 )
 
-target_compile_definitions(PresetManagerTests PRIVATE JUCE_STANDALONE_APPLICATION=1)
+target_compile_definitions(PresetManagerTests PRIVATE JUCE_STANDALONE_APPLICATION=1 JUCE_USE_CURL=0)
 
 add_test(NAME PresetManagerTests COMMAND PresetManagerTests)
